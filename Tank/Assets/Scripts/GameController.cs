@@ -41,29 +41,7 @@ public class GameController : MonoBehaviour
 
 	public void Init()
 	{
-		CurrentRound = 0;
-		NextPlayerRound();
-	}
-
-	public void NextPlayerRound()
-	{
-		IsPlayerRound = true;
-		CurrentRound++;
-		HUD.RoundCounter.text = "Round " + CurrentRound;
-		HUD.RoundIndicator.text = "Player's turn";
-
-		foreach(var hero in Heroes)
-		{
-			hero.ActionMade = false;
-		}
-
-		SelectHero(GetNextCharacter());
-	}
-
-	public void NextEnemyRound()
-	{
-		IsPlayerRound = false;
-		HUD.RoundIndicator.text = "Enemy's turn";
+		//SelectHero();
 	}
 
 	public void SelectHero(ControllableCharacter selectedHero)
@@ -84,19 +62,6 @@ public class GameController : MonoBehaviour
 			equipmentString += CurrentlySelectedHero.Equipment[CurrentlySelectedHero.Equipment.Count - 1].ToString();
 		}
 		HUD.Equipment.text = equipmentString;
-
-		if(CurrentlySelectedSpot != null)
-		{
-			foreach(var neighbor in CurrentlySelectedSpot.Neighbors)
-			{
-				neighbor.Blink = false;
-			}
-		}
-		CurrentlySelectedSpot = CurrentlySelectedHero.CurrentSpot;
-		foreach(var neighbor in CurrentlySelectedSpot.Neighbors)
-		{
-			neighbor.Blink = true;
-		}
 	}
 
 	public void UnselectHero()
@@ -107,21 +72,11 @@ public class GameController : MonoBehaviour
 		HUD.Equipment.text = "Equipment: none";
 	}
 
-	public void SelectSpot(Spot spot)
+	public void SelectSpot(Vector3 target)
 	{
-		if(CurrentlySelectedSpot != null && CurrentlySelectedSpot.Neighbors.Contains(spot))
+		if(CurrentlySelectedHero != null && CurrentlySelectedHero.CurrentCondition != ECharacterCondition.Dead)
 		{
-			if(CurrentlySelectedHero != null && CurrentlySelectedHero.CurrentState == ECharacterState.Idle)
-			{
-				CurrentlySelectedHero.GoToSpot(spot, CurrentlySelectedSpot.Neighbors.IndexOf(spot));
-
-				foreach(var neighbor in CurrentlySelectedSpot.Neighbors)
-				{
-					neighbor.Blink = false;
-				}
-				
-				//UnselectHero();
-			}
+			CurrentlySelectedHero.GoToSpot(target);
 		}
 	}
 
@@ -135,42 +90,18 @@ public class GameController : MonoBehaviour
 		return true;
 	}
 
-	bool CheckForPlayerTurnEnd()
-	{
-		foreach(var hero in Heroes)
-		{
-			if(!hero.ActionMade && hero.CurrentCondition != ECharacterCondition.Dead)
-				return false;
-		}
-		return true;
-	}
-
-	ControllableCharacter GetNextCharacter()
-	{
-		foreach(var hero in Heroes)
-		{
-			if(!hero.ActionMade && hero.CurrentCondition != ECharacterCondition.Dead)
-				return hero;
-		}
-		return null;
-	}
-
 	public void SetCursorHint(string hint)
 	{
 		HUD.CursorHint.text = hint;
 	}
 
-	public void CurrentCharacterActionEnd()
+	public void CharacterActionEnd(ControllableCharacter hero)
 	{
-		if(CheckForPlayerTurnEnd())
-			NextEnemyRound();
-		else
-			SelectHero(GetNextCharacter());
+		hero.CurrentState = ECharacterState.Idle;
 	}
 
 	public void TankActionEnd()
 	{
-		NextPlayerRound();
 	}
 
 	void Start () 

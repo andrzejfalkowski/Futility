@@ -44,7 +44,7 @@ public class Spot : MonoBehaviour
 	void OnMouseDown()
 	{
 		//Debug.Log ("Clicked on " + this.gameObject.name);
-		GameController.Instance.SelectSpot(this);
+		//GameController.Instance.SelectSpot(this);
 	}
 
 	void Start()

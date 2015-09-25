@@ -19,9 +19,40 @@ public class Tank : MonoBehaviour
 
 	}
 
-	void Rotate()
+	void RotateBody()
 	{
+		Vector3 pos = this.transform.position;
+		Vector3 moveDirection = pos - MachinegunTarget.transform.position;
+		
+		float targetAngle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg + 180f;
+		float currentAngle = Body.transform.eulerAngles.z;
 
+		float difference = targetAngle - currentAngle;
+		if(difference > 180f)
+			difference = currentAngle - targetAngle;
+
+		if(Mathf.Abs(difference) > 1f)
+			targetAngle = currentAngle + Mathf.Sign(difference) * 0.3f;
+
+		Body.transform.rotation = Quaternion.AngleAxis(targetAngle, Vector3.forward);
+	}
+
+	void RotateTurret()
+	{
+		Vector3 pos = Turret.transform.position;
+		Vector3 moveDirection = pos - CannonTarget.transform.position;
+		
+		float targetAngle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg + 180f;
+		float currentAngle = Turret.transform.eulerAngles.z;
+		
+		float difference = targetAngle - currentAngle;
+		if(difference > 180f)
+			difference = currentAngle - targetAngle;
+		
+		if(Mathf.Abs(difference) > 1f)
+			targetAngle = currentAngle + Mathf.Sign(difference) * 1f;
+		
+		Turret.transform.rotation = Quaternion.AngleAxis(targetAngle, Vector3.forward);
 	}
 
 	void MachinegunAction()
@@ -35,12 +66,17 @@ public class Tank : MonoBehaviour
 	}
 
 	// Use this for initialization
-	void Start () {
+	void Start () 
+	{
 	
 	}
 	
 	// Update is called once per frame
-	void Update () {
-	
+	void Update () 
+	{
+		if(MachinegunTarget != null)
+			RotateBody();
+		if(CannonTarget != null)
+			RotateTurret();
 	}
 }

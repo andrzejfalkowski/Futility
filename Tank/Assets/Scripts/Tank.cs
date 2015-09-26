@@ -32,7 +32,7 @@ public class Tank : MonoBehaviour
 			difference = currentAngle - targetAngle;
 
 		if(Mathf.Abs(difference) > 1f)
-			targetAngle = currentAngle + Mathf.Sign(difference) * 0.3f;
+			targetAngle = currentAngle + Mathf.Sign(difference) * 9f * Time.deltaTime;
 
 		Body.transform.rotation = Quaternion.AngleAxis(targetAngle, Vector3.forward);
 	}
@@ -50,7 +50,7 @@ public class Tank : MonoBehaviour
 			difference = currentAngle - targetAngle;
 		
 		if(Mathf.Abs(difference) > 1f)
-			targetAngle = currentAngle + Mathf.Sign(difference) * 1f;
+			targetAngle = currentAngle + Mathf.Sign(difference) * 30f * Time.deltaTime;
 		
 		Turret.transform.rotation = Quaternion.AngleAxis(targetAngle, Vector3.forward);
 	}

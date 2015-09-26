@@ -13,6 +13,7 @@ public class GameController : MonoBehaviour
 {
 	public UI HUD;
 
+	public bool ActivePause;
 	public EGameState CurrentGameState = EGameState.Gameplay;
 	public int CurrentTurn = 0;
 
@@ -42,6 +43,7 @@ public class GameController : MonoBehaviour
 	public void Init()
 	{
 		//SelectHero();
+		HUD.Init();
 	}
 
 	public void SelectHero(ControllableCharacter selectedHero)
@@ -110,7 +112,18 @@ public class GameController : MonoBehaviour
 	}
 
 	void Update () 
+	{	
+		if(Input.GetKeyDown(KeyCode.Space))
+		   ToggleActivePause();
+	}
+
+	public void ToggleActivePause()
 	{
-	
+		ActivePause = !ActivePause;
+		HUD.ActivePauseIndicator.gameObject.SetActive(ActivePause);
+		if(ActivePause)
+			Time.timeScale = 0f;
+		else
+			Time.timeScale = 1f;
 	}
 }

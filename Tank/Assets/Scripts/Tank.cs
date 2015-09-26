@@ -9,6 +9,9 @@ public class Tank : MonoBehaviour
 	public ControllableCharacter MachinegunTarget;
 	public ControllableCharacter CannonTarget;
 
+	const float DECISION_TIME = 3f;
+	public float DecisionTimer = 0f;
+	
 	void OnMouseEnter()
 	{
 		GameController.Instance.SetCursorHint("Tank");
@@ -16,7 +19,8 @@ public class Tank : MonoBehaviour
 
 	void MakeDecision()
 	{
-
+		MachinegunTarget = GameController.Instance.Heroes[Random.Range(0,GameController.Instance.Heroes.Count)];
+		CannonTarget = GameController.Instance.Heroes[Random.Range(0,GameController.Instance.Heroes.Count)];
 	}
 
 	void RotateBody()
@@ -74,9 +78,18 @@ public class Tank : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
+		DecisionTimer += Time.deltaTime;
+		if(DecisionTimer > DECISION_TIME)
+		{
+			DecisionTimer = 0f;
+			MakeDecision();
+		}
+
 		if(MachinegunTarget != null)
 			RotateBody();
 		if(CannonTarget != null)
 			RotateTurret();
+
+
 	}
 }
